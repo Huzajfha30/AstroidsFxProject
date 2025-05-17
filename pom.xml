@@ -179,5 +179,6 @@
     <module>Player</module>
     <module>Common</module>
     <module>CommonBullet</module>
+    <module>Enemy</module>
   </modules>
 </project>
