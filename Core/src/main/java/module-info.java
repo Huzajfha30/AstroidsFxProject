@@ -1,6 +1,6 @@
-import dk.sdu.cbse.coomon.services.IEntityProcessingService;
-import dk.sdu.cbse.coomon.services.IGamePluginService;
-import dk.sdu.cbse.coomon.services.IPostEntityProcessingService;
+import dk.sdu.cbse.common.services.IEntityProcessingService;
+import dk.sdu.cbse.common.services.IGamePluginService;
+import dk.sdu.cbse.common.services.IPostEntityProcessingService;
 
 module Core {
     requires Common;

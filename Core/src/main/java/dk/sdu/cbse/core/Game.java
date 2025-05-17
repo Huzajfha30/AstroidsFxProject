@@ -5,14 +5,14 @@
 package dk.sdu.cbse.core;
 
 
-import dk.sdu.cbse.coomon.data.Entity;
-import dk.sdu.cbse.coomon.data.GameData;
-import dk.sdu.cbse.coomon.data.GameKeys;
-import dk.sdu.cbse.coomon.data.World;
+import dk.sdu.cbse.common.data.Entity;
+import dk.sdu.cbse.common.data.GameData;
+import dk.sdu.cbse.common.data.GameKeys;
+import dk.sdu.cbse.common.data.World;
 
-import dk.sdu.cbse.coomon.services.IEntityProcessingService;
-import dk.sdu.cbse.coomon.services.IGamePluginService;
-import dk.sdu.cbse.coomon.services.IPostEntityProcessingService;
+import dk.sdu.cbse.common.services.IEntityProcessingService;
+import dk.sdu.cbse.common.services.IGamePluginService;
+import dk.sdu.cbse.common.services.IPostEntityProcessingService;
 import javafx.animation.AnimationTimer;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;

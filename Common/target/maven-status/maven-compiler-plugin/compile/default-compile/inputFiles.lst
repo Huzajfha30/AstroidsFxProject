@@ -1,9 +1,9 @@
-C:\Users\pc1\Desktop\CBSEProjekt\AsteroidsFXProject\AsteroidsFxProject\Common\src\main\java\dk\sdu\cbse\coomon\data\GameData.java
 C:\Users\pc1\Desktop\CBSEProjekt\AsteroidsFXProject\AsteroidsFxProject\Common\src\main\java\module-info.java
-C:\Users\pc1\Desktop\CBSEProjekt\AsteroidsFXProject\AsteroidsFxProject\Common\src\main\java\dk\sdu\cbse\coomon\data\World.java
-C:\Users\pc1\Desktop\CBSEProjekt\AsteroidsFXProject\AsteroidsFxProject\Common\src\main\java\dk\sdu\cbse\coomon\data\GameKeys.java
-C:\Users\pc1\Desktop\CBSEProjekt\AsteroidsFXProject\AsteroidsFxProject\Common\src\main\java\dk\sdu\cbse\coomon\services\IPostEntityProcessingService.java
-C:\Users\pc1\Desktop\CBSEProjekt\AsteroidsFXProject\AsteroidsFxProject\Common\src\main\java\dk\sdu\cbse\coomon\util\ServiceLocator.java
-C:\Users\pc1\Desktop\CBSEProjekt\AsteroidsFXProject\AsteroidsFxProject\Common\src\main\java\dk\sdu\cbse\coomon\data\Entity.java
-C:\Users\pc1\Desktop\CBSEProjekt\AsteroidsFXProject\AsteroidsFxProject\Common\src\main\java\dk\sdu\cbse\coomon\services\IGamePluginService.java
-C:\Users\pc1\Desktop\CBSEProjekt\AsteroidsFXProject\AsteroidsFxProject\Common\src\main\java\dk\sdu\cbse\coomon\services\IEntityProcessingService.java
+C:\Users\pc1\Desktop\CBSEProjekt\AsteroidsFXProject\AsteroidsFxProject\Common\src\main\java\dk\sdu\cbse\common\data\GameData.java
+C:\Users\pc1\Desktop\CBSEProjekt\AsteroidsFXProject\AsteroidsFxProject\Common\src\main\java\dk\sdu\cbse\common\data\World.java
+C:\Users\pc1\Desktop\CBSEProjekt\AsteroidsFXProject\AsteroidsFxProject\Common\src\main\java\dk\sdu\cbse\common\services\IEntityProcessingService.java
+C:\Users\pc1\Desktop\CBSEProjekt\AsteroidsFXProject\AsteroidsFxProject\Common\src\main\java\dk\sdu\cbse\common\data\Entity.java
+C:\Users\pc1\Desktop\CBSEProjekt\AsteroidsFXProject\AsteroidsFxProject\Common\src\main\java\dk\sdu\cbse\common\util\ServiceLocator.java
+C:\Users\pc1\Desktop\CBSEProjekt\AsteroidsFXProject\AsteroidsFxProject\Common\src\main\java\dk\sdu\cbse\common\services\IPostEntityProcessingService.java
+C:\Users\pc1\Desktop\CBSEProjekt\AsteroidsFXProject\AsteroidsFxProject\Common\src\main\java\dk\sdu\cbse\common\data\GameKeys.java
+C:\Users\pc1\Desktop\CBSEProjekt\AsteroidsFXProject\AsteroidsFxProject\Common\src\main\java\dk\sdu\cbse\common\services\IGamePluginService.java
