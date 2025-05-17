@@ -1,0 +1,9 @@
+dk\sdu\cbse\data\Entity.class
+module-info.class
+dk\sdu\cbse\data\GameKeys.class
+dk\sdu\cbse\services\IPostEntityProcessingService.class
+dk\sdu\cbse\data\World.class
+dk\sdu\cbse\util\ServiceLocator.class
+dk\sdu\cbse\services\IEntityProcessingService.class
+dk\sdu\cbse\data\GameData.class
+dk\sdu\cbse\services\IGamePluginService.class
