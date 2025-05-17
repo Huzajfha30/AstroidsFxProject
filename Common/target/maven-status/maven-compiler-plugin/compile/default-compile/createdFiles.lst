@@ -1,9 +1,9 @@
-dk\sdu\cbse\data\Entity.class
+dk\sdu\cbse\coomon\util\ServiceLocator.class
+dk\sdu\cbse\coomon\services\IGamePluginService.class
 module-info.class
-dk\sdu\cbse\data\GameKeys.class
-dk\sdu\cbse\services\IPostEntityProcessingService.class
-dk\sdu\cbse\data\World.class
-dk\sdu\cbse\util\ServiceLocator.class
-dk\sdu\cbse\services\IEntityProcessingService.class
-dk\sdu\cbse\data\GameData.class
-dk\sdu\cbse\services\IGamePluginService.class
+dk\sdu\cbse\coomon\data\World.class
+dk\sdu\cbse\coomon\data\GameData.class
+dk\sdu\cbse\coomon\services\IPostEntityProcessingService.class
+dk\sdu\cbse\coomon\data\Entity.class
+dk\sdu\cbse\coomon\services\IEntityProcessingService.class
+dk\sdu\cbse\coomon\data\GameKeys.class

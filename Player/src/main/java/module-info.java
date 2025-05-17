@@ -1,8 +1,10 @@
-import dk.sdu.cbse.services.IEntityProcessingService;
-import dk.sdu.cbse.services.IGamePluginService;
+import dk.sdu.cbse.coomon.services.IEntityProcessingService;
+import dk.sdu.cbse.coomon.services.IGamePluginService;
+import dk.sdu.cbse.player.PlayerControlSystem;
+import dk.sdu.cbse.player.PlayerPlugin;
 
 module Player {
     requires Common;
-    provides IEntityProcessingService with dk.sdu.cbse.PlayerControlSystem;
-    provides IGamePluginService with dk.sdu.cbse.PlayerPlugin;
+    provides IEntityProcessingService with PlayerControlSystem;
+    provides IGamePluginService with PlayerPlugin;
 }
