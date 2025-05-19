@@ -34,11 +34,15 @@ public class PlayerControlSystem implements IEntityProcessingService {
             }
             if(gameData.getKeys().isDown(GameKeys.SPACE)) {
                 getBulletSPIs().stream().findFirst().ifPresent(
-                        spi -> {world.addEntity(spi.createBullet(player, gameData));}
+                        spi -> {
+                            Entity bullet = spi.createBullet(player, gameData);
+                            bullet.setType("PLAYER_BULLET"); // 👈 Tilføj denne linje
+                            world.addEntity(bullet);
+                        }
                 );
             }
 
-                if (player.getX() < 0) {
+            if (player.getX() < 0) {
                     player.setX(1);
                 }
 

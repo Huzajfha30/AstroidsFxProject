@@ -35,9 +35,11 @@ public class EnemyControlSystem implements IEntityProcessingService {
                         .findFirst()
                         .ifPresent(spi -> {
                             Entity bullet = spi.get().createBullet(enemy, gameData);
+                            bullet.setType("ENEMY_BULLET"); // 👈 VIGTIGT
                             world.addEntity(bullet);
                         });
             }
+
 
             // 👇 Sørg for enemy har en synlig form
             setPolygonCoordinates(enemy);

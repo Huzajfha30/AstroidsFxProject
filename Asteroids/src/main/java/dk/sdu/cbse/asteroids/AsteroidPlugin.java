@@ -17,10 +17,12 @@ public class AsteroidPlugin implements IGamePluginService {
 
     @Override
     public void start(GameData gameData, World world) {
-        Entity asteroid = createAsteroid(gameData);
-        world.addEntity(asteroid);
-    }
 
+        for (int i = 0; i < 4; i++) {
+            Entity asteroid = createAsteroid(gameData);
+            world.addEntity(asteroid);
+        }
+    }
     @Override
     public void stop(GameData gameData, World world) {
         // Remove entities
@@ -31,6 +33,7 @@ public class AsteroidPlugin implements IGamePluginService {
 
     private Entity createAsteroid(GameData gameData) {
         Entity asteroid = new Asteroids();
+        asteroid.setType("Asteroid");
         Random rnd = new Random();
         int size = rnd.nextInt(10) + 5;
         asteroid.setPolygonCoordinates(size, -size, -size, -size, -size, size, size, size);

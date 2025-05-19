@@ -14,7 +14,7 @@ public class EnemyPlugin implements IGamePluginService {
 
     @Override
     public void start(GameData gameData, World world) {
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 15; i++) {
             Entity enemy = createEnemyShip(gameData);
             enemies.add(enemy);
             world.addEntity(enemy);
@@ -23,20 +23,13 @@ public class EnemyPlugin implements IGamePluginService {
 
     private Entity createEnemyShip(GameData gameData) {
         Entity enemyShip = new Enemy();
-
+        enemyShip.setType("Enemy"); // <-- vigtigt!
         // Fjendens form (ligner en trekant)
         enemyShip.setPolygonCoordinates(-5, -5, 10, 0, -5, 5);
-
-        // Tilfældig position og rotation
-        double x = Math.random() * gameData.getDisplayWidth();
-        double y = Math.random() * gameData.getDisplayHeight();
-        double rotation = Math.random() * 360;
-
-        enemyShip.setX(x);
-        enemyShip.setY(y);
-        enemyShip.setRotation(rotation);
+        enemyShip.setX(Math.random() * gameData.getDisplayWidth());
+        enemyShip.setY(Math.random() * gameData.getDisplayHeight());
         enemyShip.setRadius(8);
-
+        enemyShip.setRotation(Math.random() * 360); // 💡 Tilfældig startretning
         return enemyShip;
     }
 
