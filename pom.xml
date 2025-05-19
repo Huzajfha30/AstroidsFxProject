@@ -181,6 +181,8 @@
       <module>Bullet</module>
       <module>Player</module>
       <module>Enemy</module>
+      <module>Asteroids</module>
+      <module>CommonAsteroids</module>
     </modules>
 
 
