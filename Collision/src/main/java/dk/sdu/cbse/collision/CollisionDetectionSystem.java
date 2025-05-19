@@ -1,14 +1,18 @@
 package dk.sdu.cbse.collision;
 
+import dk.sdu.cbse.common.asteroids.IAsteroidSplitter;
 import dk.sdu.cbse.common.data.Entity;
 import dk.sdu.cbse.common.data.GameData;
 import dk.sdu.cbse.common.data.World;
 import dk.sdu.cbse.common.services.IPostEntityProcessingService;
+import dk.sdu.cbse.player.Player;
 
 import java.util.*;
 
 public class CollisionDetectionSystem implements IPostEntityProcessingService {
-
+    private final IAsteroidSplitter splitter = ServiceLoader.load(IAsteroidSplitter.class)
+            .findFirst()
+            .orElseThrow(() -> new RuntimeException("No AsteroidSplitter implementation found"));
     @Override
     public void process(GameData gameData, World world) {
         Set<Entity> entitiesToRemove = new HashSet<>();
@@ -26,37 +30,55 @@ public class CollisionDetectionSystem implements IPostEntityProcessingService {
 
                 if (t1 == null || t2 == null) continue;
 
-                // PLAYER bullet hits ENEMY
-                if ((t1.equals("PLAYER_BULLET") && t2.equals("Enemy")) || (t2.equals("PLAYER_BULLET") && t1.equals("Enemy"))) {
-                    if (collides(e1, e2)) {
-                        entitiesToRemove.add(e1);
-                        entitiesToRemove.add(e2);
-                    }
+                // 🎯 PLAYER bullet hits ENEMY
+                if (collides(e1, e2) && (
+                        (t1.equals("PLAYER_BULLET") && t2.equals("Enemy")) ||
+                                (t2.equals("PLAYER_BULLET") && t1.equals("Enemy"))
+                )) {
+                    entitiesToRemove.add(e1);
+                    entitiesToRemove.add(e2);
                 }
 
-// PLAYER bullet hits ASTEROID
-                else if ((t1.equals("PLAYER_BULLET") && t2.equals("Asteroid")) || (t2.equals("PLAYER_BULLET") && t1.equals("Asteroid"))) {
-                    if (collides(e1, e2)) {
-                        entitiesToRemove.add(e1);
-                        entitiesToRemove.add(e2);
-                    }
+                // 💥 PLAYER bullet hits ASTEROID
+                else if (collides(e1, e2) && (
+                        (t1.equals("PLAYER_BULLET") && t2.equals("Asteroid")) ||
+                                (t2.equals("PLAYER_BULLET") && t1.equals("Asteroid"))
+                )) {
+                    Entity asteroid = t1.equals("Asteroid") ? e1 : e2;
+                    splitter.createSplitAsteroid(asteroid, world);
+                    entitiesToRemove.add(e1);
+                    entitiesToRemove.add(e2);
                 }
 
-// ENEMY bullet hits PLAYER
-                else if ((t1.equals("ENEMY_BULLET") && t2.equals("Player")) || (t2.equals("ENEMY_BULLET") && t1.equals("Player"))) {
-                    if (collides(e1, e2)) {
-                        entitiesToRemove.add(e1);
-                        entitiesToRemove.add(e2);
-                    }
+                // 💣 ENEMY bullet hits PLAYER
+                else if (collides(e1, e2) && (
+                        (t1.equals("ENEMY_BULLET") && t2.equals("Player")) ||
+                                (t2.equals("ENEMY_BULLET") && t1.equals("Player"))
+                )) {
+                    handlePlayerHit(e1, e2, entitiesToRemove);
                 }
 
-// ENEMY bullet hits ASTEROID (optional)
-                else if ((t1.equals("ENEMY_BULLET") && t2.equals("Asteroid")) || (t2.equals("ENEMY_BULLET") && t1.equals("Asteroid"))) {
-                    if (collides(e1, e2)) {
-                        entitiesToRemove.add(e1);
-                        entitiesToRemove.add(e2);
-                    }
+                // 🔻 ENEMY bullet hits ASTEROID (optional)
 
+
+                // 💥 PLAYER touches ENEMY
+                else if (collides(e1, e2) && (
+                        (t1.equals("Player") && t2.equals("Enemy")) ||
+                                (t1.equals("Enemy") && t2.equals("Player"))
+                )) {
+                    handlePlayerHit(e1, e2, entitiesToRemove);
+                    if (t1.equals("Enemy")) entitiesToRemove.add(e1);
+                    if (t2.equals("Enemy")) entitiesToRemove.add(e2);
+                }
+
+                // 🪨 PLAYER touches ASTEROID
+                else if (collides(e1, e2) && (
+                        (t1.equals("Player") && t2.equals("Asteroid")) ||
+                                (t1.equals("Asteroid") && t2.equals("Player"))
+                )) {
+                    handlePlayerHit(e1, e2, entitiesToRemove);
+                    if (t1.equals("Asteroid")) entitiesToRemove.add(e1);
+                    if (t2.equals("Asteroid")) entitiesToRemove.add(e2);
                 }
             }
 
@@ -68,6 +90,21 @@ public class CollisionDetectionSystem implements IPostEntityProcessingService {
         }
     }
 
+    private void handlePlayerHit(Entity e1, Entity e2, Set<Entity> entitiesToRemove) {
+        if (e1.getType().equals("Player") && e1 instanceof Player) {
+            Player player = (Player) e1;
+            player.loseLife();
+            System.out.println("⚠️ Player hit! Lives left: " + player.getLives());
+            if (player.getLives() <= 0) entitiesToRemove.add(e1);
+        }
+        if (e2.getType().equals("Player") && e2 instanceof Player) {
+            Player player = (Player) e2;
+            player.loseLife();
+            System.out.println("⚠️ Player hit! Lives left: " + player.getLives());
+            if (player.getLives() <= 0) entitiesToRemove.add(e2);
+        }
+    }
+
     private boolean collides(Entity e1, Entity e2) {
         float dx = (float) (e1.getX() - e2.getX());
         float dy = (float) (e1.getY() - e2.getY());
@@ -76,14 +113,30 @@ public class CollisionDetectionSystem implements IPostEntityProcessingService {
     }
 
     private void keepEntityWithinBounds(Entity entity, GameData gameData) {
+        String type = entity.getType();
+
+        // ❌ Skip bullets — de skal IKKE wrappe
+        if ("PLAYER_BULLET".equals(type) || "ENEMY_BULLET".equals(type)) {
+            return;
+        }
+
         double x = entity.getX();
         double y = entity.getY();
         float maxX = gameData.getDisplayWidth();
         float maxY = gameData.getDisplayHeight();
 
-        if (x < 0) entity.setX(0);
-        if (x > maxX) entity.setX(maxX);
-        if (y < 0) entity.setY(0);
-        if (y > maxY) entity.setY(maxY);
+        if (x < 0) {
+            entity.setX(maxX);
+        } else if (x > maxX) {
+            entity.setX(0);
+        }
+
+        if (y < 0) {
+            entity.setY(maxY);
+        } else if (y > maxY) {
+            entity.setY(0);
+        }
     }
+
+
 }

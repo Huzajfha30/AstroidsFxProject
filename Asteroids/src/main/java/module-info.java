@@ -7,5 +7,6 @@ module Asteroids {
     provides IEntityProcessingService with dk.sdu.cbse.asteroids.AsteroidsControlSystem;
     provides IGamePluginService with  dk.sdu.cbse.asteroids.AsteroidPlugin;
     provides dk.sdu.cbse.common.asteroids.IAsteroidSplitter with dk.sdu.cbse.asteroids.AsteroidSplitterImpl;
+
 }
 
