@@ -5,11 +5,11 @@
 package dk.sdu.cbse.core;
 
 
+
 import dk.sdu.cbse.common.data.Entity;
 import dk.sdu.cbse.common.data.GameData;
 import dk.sdu.cbse.common.data.GameKeys;
 import dk.sdu.cbse.common.data.World;
-
 import dk.sdu.cbse.common.services.IEntityProcessingService;
 import dk.sdu.cbse.common.services.IGamePluginService;
 import dk.sdu.cbse.common.services.IPostEntityProcessingService;
@@ -21,9 +21,11 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.scene.shape.Polygon;
 
+
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.List;
+
 
 /**
  *

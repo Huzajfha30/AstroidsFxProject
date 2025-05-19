@@ -11,7 +11,7 @@ module Core {
     requires spring.context;
     exports dk.sdu.cbse.core;
     opens dk.sdu.cbse.core to javafx.graphics,spring.core;
-    uses IGamePluginService;
-    uses IEntityProcessingService;
-    uses IPostEntityProcessingService;
+    uses dk.sdu.cbse.common.services.IEntityProcessingService;
+    uses dk.sdu.cbse.common.services.IGamePluginService;
+    uses dk.sdu.cbse.common.services.IPostEntityProcessingService;
 }

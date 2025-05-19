@@ -22,5 +22,5 @@ public interface IEntityProcessingService {
 
     void process(GameData gameData, World world);
 
-    Entity createBullet(Entity shooter, GameData gameData);
+
 }
