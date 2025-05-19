@@ -1,6 +1,5 @@
 package dk.sdu.cbse.player;
 
-
 import dk.sdu.cbse.common.bullet.BulletSPI;
 import dk.sdu.cbse.common.data.Entity;
 import dk.sdu.cbse.common.data.GameData;
@@ -13,12 +12,10 @@ import java.util.ServiceLoader;
 
 import static java.util.stream.Collectors.toList;
 
-
 public class PlayerControlSystem implements IEntityProcessingService {
 
     @Override
     public void process(GameData gameData, World world) {
-
         for (Entity player : world.getEntities(Player.class)) {
             if (gameData.getKeys().isDown(GameKeys.LEFT)) {
                 player.setRotation(player.getRotation() - 5);
@@ -27,43 +24,28 @@ public class PlayerControlSystem implements IEntityProcessingService {
                 player.setRotation(player.getRotation() + 5);
             }
             if (gameData.getKeys().isDown(GameKeys.UP)) {
-                double changeX = Math.cos(Math.toRadians(player.getRotation()));
-                double changeY = Math.sin(Math.toRadians(player.getRotation()));
-                player.setX(player.getX() + changeX);
-                player.setY(player.getY() + changeY);
+                double dx = Math.cos(Math.toRadians(player.getRotation()));
+                double dy = Math.sin(Math.toRadians(player.getRotation()));
+                player.setX(player.getX() + dx);
+                player.setY(player.getY() + dy);
             }
-            if(gameData.getKeys().isDown(GameKeys.SPACE)) {
-                getBulletSPIs().stream().findFirst().ifPresent(
-                        spi -> {
-                            Entity bullet = spi.createBullet(player, gameData);
-                            bullet.setType("PLAYER_BULLET"); // 👈 Tilføj denne linje
-                            world.addEntity(bullet);
-                        }
-                );
+            if (gameData.getKeys().isDown(GameKeys.SPACE)) {
+                getBulletSPIs().stream().findFirst().ifPresent(spi -> {
+                    Entity bullet = spi.createBullet(player, gameData);
+                    bullet.setType("PLAYER_BULLET");
+                    world.addEntity(bullet);
+                });
             }
 
-            if (player.getX() < 0) {
-                    player.setX(1);
-                }
-
-                if (player.getX() > gameData.getDisplayWidth()) {
-                    player.setX(gameData.getDisplayWidth() - 1);
-                }
-
-                if (player.getY() < 0) {
-                    player.setY(1);
-                }
-
-                if (player.getY() > gameData.getDisplayHeight()) {
-                    player.setY(gameData.getDisplayHeight() - 1);
-                }
-
-
-            }
+            // Begræns bevægelse til skærmen
+            if (player.getX() < 0) player.setX(0);
+            if (player.getX() > gameData.getDisplayWidth()) player.setX(gameData.getDisplayWidth());
+            if (player.getY() < 0) player.setY(0);
+            if (player.getY() > gameData.getDisplayHeight()) player.setY(gameData.getDisplayHeight());
         }
+    }
 
     private Collection<? extends BulletSPI> getBulletSPIs() {
         return ServiceLoader.load(BulletSPI.class).stream().map(ServiceLoader.Provider::get).collect(toList());
     }
-    }
-
+}

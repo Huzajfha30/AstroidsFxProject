@@ -5,62 +5,74 @@ import dk.sdu.cbse.common.data.GameData;
 import dk.sdu.cbse.common.data.World;
 import dk.sdu.cbse.common.services.IPostEntityProcessingService;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class CollisionDetectionSystem implements IPostEntityProcessingService {
 
     @Override
     public void process(GameData gameData, World world) {
-        List<Entity> entitiesToRemove = new ArrayList<>();
+        Set<Entity> entitiesToRemove = new HashSet<>();
+        List<Entity> entities = new ArrayList<>(world.getEntities());
 
-        for (Entity entity1 : world.getEntities()) {
-            for (Entity entity2 : world.getEntities()) {
-                if (entity1 == null || entity2 == null) continue;
-                if (entity1.getID() == null || entity2.getID() == null) continue;
-                if (entity1.getID().equals(entity2.getID())) continue;
+        for (int i = 0; i < entities.size(); i++) {
+            Entity e1 = entities.get(i);
+            for (int j = i + 1; j < entities.size(); j++) {
+                Entity e2 = entities.get(j);
 
-                String type1 = entity1.getType();
-                String type2 = entity2.getType();
+                if (e1 == null || e2 == null || e1.getID().equals(e2.getID())) continue;
 
-                // Hvis typerne ikke er sat, spring over
-                if (type1 == null || type2 == null) continue;
+                String t1 = e1.getType();
+                String t2 = e2.getType();
 
-                // Skip collisions between same types
-                if (type1.equals("Enemy") && type2.equals("Enemy")) continue;
-                if (type1.equals("Asteroid") && type2.equals("Asteroid")) continue;
+                if (t1 == null || t2 == null) continue;
 
-                // Skip collisions between enemies and asteroids
-                if ((type1.equals("Enemy") && type2.equals("Asteroid")) || (type1.equals("Asteroid") && type2.equals("Enemy"))) continue;
-
-                // Collision detection
-                // Undgå at enemy-bullets dræber enemies
-                if ((type1.equals("ENEMY_BULLET") && type2.equals("Enemy")) ||
-                        (type1.equals("Enemy") && type2.equals("ENEMY_BULLET"))) {
-                    continue;
+                // PLAYER bullet hits ENEMY
+                if ((t1.equals("PLAYER_BULLET") && t2.equals("Enemy")) || (t2.equals("PLAYER_BULLET") && t1.equals("Enemy"))) {
+                    if (collides(e1, e2)) {
+                        entitiesToRemove.add(e1);
+                        entitiesToRemove.add(e2);
+                    }
                 }
 
-// Collision detection
-                if (collides(entity1, entity2)) {
-                    entitiesToRemove.add(entity1);
-                    entitiesToRemove.add(entity2);
+// PLAYER bullet hits ASTEROID
+                else if ((t1.equals("PLAYER_BULLET") && t2.equals("Asteroid")) || (t2.equals("PLAYER_BULLET") && t1.equals("Asteroid"))) {
+                    if (collides(e1, e2)) {
+                        entitiesToRemove.add(e1);
+                        entitiesToRemove.add(e2);
+                    }
                 }
 
+// ENEMY bullet hits PLAYER
+                else if ((t1.equals("ENEMY_BULLET") && t2.equals("Player")) || (t2.equals("ENEMY_BULLET") && t1.equals("Player"))) {
+                    if (collides(e1, e2)) {
+                        entitiesToRemove.add(e1);
+                        entitiesToRemove.add(e2);
+                    }
+                }
+
+// ENEMY bullet hits ASTEROID (optional)
+                else if ((t1.equals("ENEMY_BULLET") && t2.equals("Asteroid")) || (t2.equals("ENEMY_BULLET") && t1.equals("Asteroid"))) {
+                    if (collides(e1, e2)) {
+                        entitiesToRemove.add(e1);
+                        entitiesToRemove.add(e2);
+                    }
+
+                }
             }
 
-            keepEntityWithinBounds(entity1, gameData);
+            keepEntityWithinBounds(e1, gameData);
         }
 
-        for (Entity entity : entitiesToRemove) {
-            world.removeEntity(entity);
+        for (Entity e : entitiesToRemove) {
+            world.removeEntity(e);
         }
     }
 
-    private boolean collides(Entity entity1, Entity entity2) {
-        float dx = (float) entity1.getX() - (float) entity2.getX();
-        float dy = (float) entity1.getY() - (float) entity2.getY();
+    private boolean collides(Entity e1, Entity e2) {
+        float dx = (float) (e1.getX() - e2.getX());
+        float dy = (float) (e1.getY() - e2.getY());
         float distance = (float) Math.sqrt(dx * dx + dy * dy);
-        return distance < (entity1.getRadius() + entity2.getRadius());
+        return distance < (e1.getRadius() + e2.getRadius());
     }
 
     private void keepEntityWithinBounds(Entity entity, GameData gameData) {

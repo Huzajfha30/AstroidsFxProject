@@ -1,2 +1,3 @@
 module-info.class
 dk\sdu\cbse\common\asteroids\Asteroids.class
+dk\sdu\cbse\common\asteroids\IAsteroidSplitter.class
