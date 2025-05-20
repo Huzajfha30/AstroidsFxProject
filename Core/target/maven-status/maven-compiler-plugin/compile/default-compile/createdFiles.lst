@@ -1,5 +1,6 @@
 dk\sdu\cbse\core\ModuleConfig.class
 dk\sdu\cbse\core\Game$1.class
 dk\sdu\cbse\core\Game.class
+dk\sdu\cbse\core\PluginLoader.class
 module-info.class
 dk\sdu\cbse\core\Main.class

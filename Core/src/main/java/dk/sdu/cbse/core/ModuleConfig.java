@@ -1,42 +1,47 @@
 package dk.sdu.cbse.core;
 
-
-
-import dk.sdu.cbse.common.services.IEntityProcessingService;
 import dk.sdu.cbse.common.services.IGamePluginService;
+import dk.sdu.cbse.common.services.IEntityProcessingService;
 import dk.sdu.cbse.common.services.IPostEntityProcessingService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.util.List;
 import java.util.ServiceLoader;
+
 import static java.util.stream.Collectors.toList;
 
-
-
 @Configuration
-class ModuleConfig {
-
-    public ModuleConfig() {
-    }
+public class ModuleConfig {
 
     @Bean
-    public Game game(){
-        return new Game(gamePluginServices(), entityProcessingServiceList(), postEntityProcessingServices());
-    }
-
-    @Bean
-    public List<IEntityProcessingService> entityProcessingServiceList(){
-        return ServiceLoader.load(IEntityProcessingService.class).stream().map(ServiceLoader.Provider::get).collect(toList());
+    public Game game() {
+        return new Game(
+                gamePluginServices(),                 // Dynamisk loadede game plugins
+                entityProcessingServiceList(),        // Alm. services
+                postEntityProcessingServices()        // Alm. services
+        );
     }
 
     @Bean
     public List<IGamePluginService> gamePluginServices() {
-        return ServiceLoader.load(IGamePluginService.class).stream().map(ServiceLoader.Provider::get).collect(toList());
+        // Brug PluginLoader til at hente moduler fra plugins/
+        return PluginLoader.loadPlugins();
+    }
+
+    @Bean
+    public List<IEntityProcessingService> entityProcessingServiceList() {
+        return ServiceLoader.load(IEntityProcessingService.class)
+                .stream()
+                .map(ServiceLoader.Provider::get)
+                .collect(toList());
     }
 
     @Bean
     public List<IPostEntityProcessingService> postEntityProcessingServices() {
-        return ServiceLoader.load(IPostEntityProcessingService.class).stream().map(ServiceLoader.Provider::get).collect(toList());
+        return ServiceLoader.load(IPostEntityProcessingService.class)
+                .stream()
+                .map(ServiceLoader.Provider::get)
+                .collect(toList());
     }
 }
