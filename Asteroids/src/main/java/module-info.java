@@ -15,7 +15,10 @@ module Asteroids {
 
     // Gives access to asteroid-specific interfaces like IAsteroidSplitter
     requires CommonAsteroids;
+    requires spring.context;
+    requires spring.beans;
 
+    exports dk.sdu.cbse.asteroids to spring.beans;
     // Provides an implementation of IEntityProcessingService.
     // This is used to update asteroid movement and behavior on every frame.
     provides dk.sdu.cbse.common.services.IEntityProcessingService

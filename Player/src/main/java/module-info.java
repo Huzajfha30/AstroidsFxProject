@@ -13,6 +13,7 @@ module Player {
     requires CommonBullet;
 
     requires commonHealth;
+    requires spring.context;
 // The player module uses the BulletSPI to request bullet creation at runtime.
     // The actual implementation will be loaded dynamically using ServiceLoader.
     uses dk.sdu.cbse.common.bullet.BulletSPI;

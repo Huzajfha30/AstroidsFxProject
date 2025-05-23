@@ -6,6 +6,7 @@ import dk.sdu.cbse.common.services.IEntityProcessingService;
 import dk.sdu.cbse.common.services.IGamePluginService;
 import dk.sdu.cbse.common.services.IPostEntityProcessingService;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 import java.util.List;
@@ -15,6 +16,7 @@ import static java.util.stream.Collectors.toList;
 
 
 @Configuration
+@ComponentScan(basePackages = "dk.sdu.cbse")
 class ModuleConfig {
 
     public ModuleConfig() {

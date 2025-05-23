@@ -19,7 +19,7 @@ module Core {
     exports dk.sdu.cbse.core;
 
     // Allows JavaFX and Spring to reflectively access internal classes (e.g. for GUI or injection)
-    opens dk.sdu.cbse.core to javafx.graphics,spring.core;
+    opens dk.sdu.cbse.core to javafx.graphics,spring.core,spring.beans;
     // Uses implementations of IEntityProcessingService.
     // These are discovered and loaded at runtime using ServiceLoader.
     uses dk.sdu.cbse.common.services.IEntityProcessingService;

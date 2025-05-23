@@ -6,6 +6,7 @@ module Enemy {
     requires Common;
     // Gives access to shared bullet-related interfaces like BulletSPI
     requires CommonBullet;
+    requires spring.context;
     // Provides an implementation of IGamePluginService.
     // This allows the enemy module to spawn enemy ships when the game starts.
     provides IGamePluginService with dk.sdu.cbse.enemy.EnemyPlugin;
