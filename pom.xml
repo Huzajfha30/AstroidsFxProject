@@ -185,6 +185,7 @@
       <module>CommonAsteroids</module>
       <module>Collision</module>
       <module>Health</module>
+      <module>commonHealth</module>
     </modules>
 
 

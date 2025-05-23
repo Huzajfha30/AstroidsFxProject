@@ -42,10 +42,28 @@ public class PlayerControlSystem implements IEntityProcessingService {
             if (player.getX() > gameData.getDisplayWidth()) player.setX(gameData.getDisplayWidth());
             if (player.getY() < 0) player.setY(0);
             if (player.getY() > gameData.getDisplayHeight()) player.setY(gameData.getDisplayHeight());
+
+            // 🧪 TEST: tryk SPACE én gang for at skade spilleren og se health/lives
+            if (player instanceof Player) {
+                Player p = (Player) player;
+
+                if (gameData.getKeys().isPressed(GameKeys.SPACE)) {
+                    System.out.println("▶️ Before: Health=" + p.getHealth().getCurrent() + ", Lives=" + p.getLives());
+                    p.takeDamage(10);
+                    System.out.println("❗ After:  Health=" + p.getHealth().getCurrent() + ", Lives=" + p.getLives());
+
+                    if (p.getHealth().isDead()) {
+                        System.out.println("💀 Health is zero – player lost a life!");
+                    }
+                }
+            }
         }
     }
 
     private Collection<? extends BulletSPI> getBulletSPIs() {
-        return ServiceLoader.load(BulletSPI.class).stream().map(ServiceLoader.Provider::get).collect(toList());
+        return ServiceLoader.load(BulletSPI.class)
+                .stream()
+                .map(ServiceLoader.Provider::get)
+                .collect(toList());
     }
 }

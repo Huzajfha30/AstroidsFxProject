@@ -56,7 +56,12 @@ public class CollisionDetectionSystem implements IPostEntityProcessingService {
                                 (t2.equals("ENEMY_BULLET") && t1.equals("Player"))
                 )) {
                     handlePlayerHit(e1, e2, entitiesToRemove);
+
+                    // 🔥 Fjern ENEMY_BULLET fra verden så den ikke rammer 2 gange
+                    if (t1.equals("ENEMY_BULLET")) entitiesToRemove.add(e1);
+                    if (t2.equals("ENEMY_BULLET")) entitiesToRemove.add(e2);
                 }
+
 
                 // 🔻 ENEMY bullet hits ASTEROID (optional)
 
@@ -91,19 +96,30 @@ public class CollisionDetectionSystem implements IPostEntityProcessingService {
     }
 
     private void handlePlayerHit(Entity e1, Entity e2, Set<Entity> entitiesToRemove) {
-        if (e1.getType().equals("Player") && e1 instanceof Player) {
+        if (e1 instanceof Player && e1.getType().equals("Player")) {
             Player player = (Player) e1;
-            player.loseLife();
-            System.out.println("⚠️ Player hit! Lives left: " + player.getLives());
-            if (player.getLives() <= 0) entitiesToRemove.add(e1);
+            player.takeDamage(20);
+            System.out.println("⚠️ Player took 20 damage! Health: " + player.getHealth().getCurrent());
+
+            if (player.getLives() <= 0) {
+                System.out.println("☠️ Player is out of lives and removed from world.");
+                entitiesToRemove.add(player);
+            }
         }
-        if (e2.getType().equals("Player") && e2 instanceof Player) {
+
+        if (e2 instanceof Player && e2.getType().equals("Player")) {
             Player player = (Player) e2;
-            player.loseLife();
-            System.out.println("⚠️ Player hit! Lives left: " + player.getLives());
-            if (player.getLives() <= 0) entitiesToRemove.add(e2);
+            player.takeDamage(20);
+            System.out.println("⚠️ Player took 20 damage! Health: " + player.getHealth().getCurrent());
+
+            if (player.getLives() <= 0) {
+                System.out.println("☠️ Player is out of lives and removed from world.");
+                entitiesToRemove.add(player);
+            }
         }
     }
+
+
 
     private boolean collides(Entity e1, Entity e2) {
         float dx = (float) (e1.getX() - e2.getX());

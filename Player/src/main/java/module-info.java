@@ -12,10 +12,11 @@ module Player {
 // It also needs access to the shared Bullet interface used for firing bullets
     requires CommonBullet;
 
+    requires commonHealth;
 // The player module uses the BulletSPI to request bullet creation at runtime.
     // The actual implementation will be loaded dynamically using ServiceLoader.
     uses dk.sdu.cbse.common.bullet.BulletSPI;
-
+    uses dk.sdu.cbse.common.health.IHealth;
     // It also provides an implementation of IEntityProcessingService
     // (used to update player movement and handle input every frame)
     provides IEntityProcessingService with PlayerControlSystem;

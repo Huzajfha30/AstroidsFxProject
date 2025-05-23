@@ -18,6 +18,8 @@ module Collision {
     // such as the Player entity and its components.
     requires Player;
 
+    requires commonHealth;
+
     // Declares that this module uses the IAsteroidSplitter interface.
     // The actual implementation (splitting logic) is provided by the Asteroids module.
     uses dk.sdu.cbse.common.asteroids.IAsteroidSplitter;
