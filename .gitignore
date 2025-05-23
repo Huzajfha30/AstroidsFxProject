@@ -1,0 +1,7 @@
+# Maven og IDE output
+target/
+mods-mvn/
+*.iml
+.idea/
+*.class
+*.jar
