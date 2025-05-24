@@ -41,7 +41,7 @@ class Game {
     private final List<IGamePluginService> gamePluginServices;
     private final List<IEntityProcessingService> entityProcessingServiceList;
     private final List<IPostEntityProcessingService> postEntityProcessingServices;
-    private final Text livesText = new Text(10, 40, "❤️ Lives: ");
+
 
     Game(List<IGamePluginService> gamePluginServices, List<IEntityProcessingService> entityProcessingServiceList, List<IPostEntityProcessingService> postEntityProcessingServices) {
         this.gamePluginServices = gamePluginServices;
@@ -97,6 +97,7 @@ class Game {
         }
         window.setScene(scene);
         window.setTitle("ASTEROIDS");
+        window.setResizable(false);
         window.show();
     }
 
@@ -104,6 +105,9 @@ class Game {
         new AnimationTimer() {
             @Override
             public void handle(long now) {
+
+
+
                 update();
                 draw();
                 gameData.getKeys().update();
@@ -113,6 +117,7 @@ class Game {
     }
 
     private void update() {
+        gameData.setDeltaTime();
         for (IEntityProcessingService entityProcessorService : getEntityProcessingServices()) {
             entityProcessorService.process(gameData, world);
         }
@@ -122,18 +127,14 @@ class Game {
     }
 
     private void draw() {
-        // Remove polygons for entities no longer in the world
-        Iterator<Map.Entry<Entity, Polygon>> it = polygons.entrySet().iterator();
-        while (it.hasNext()) {
-            Map.Entry<Entity, Polygon> entry = it.next();
-            Entity entity = entry.getKey();
-            if (!world.getEntities().contains(entity)) {
-                gameWindow.getChildren().remove(entry.getValue());
-                it.remove(); // Remove from polygons map too
+        for (Entity polygonEntity : polygons.keySet()) {
+            if(!world.getEntities().contains(polygonEntity)){
+                Polygon removedPolygon = polygons.get(polygonEntity);
+                polygons.remove(polygonEntity);
+                gameWindow.getChildren().remove(removedPolygon);
             }
         }
 
-        // Update or add polygons for all current entities
         for (Entity entity : world.getEntities()) {
             Polygon polygon = polygons.get(entity);
             if (polygon == null) {
@@ -144,9 +145,9 @@ class Game {
             polygon.setTranslateX(entity.getX());
             polygon.setTranslateY(entity.getY());
             polygon.setRotate(entity.getRotation());
+            polygon.setFill(entity.getColor());
         }
 
-        // Optional: update UI labels like lives here too if you have any
     }
 
 

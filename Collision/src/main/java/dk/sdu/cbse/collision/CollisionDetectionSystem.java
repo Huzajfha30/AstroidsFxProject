@@ -1,142 +1,89 @@
 package dk.sdu.cbse.collision;
 
-import dk.sdu.cbse.common.asteroids.IAsteroidSplitter;
+
+import dk.sdu.cbse.common.asteroids.Asteroids;
+import dk.sdu.cbse.common.bullet.Bullet;
 import dk.sdu.cbse.common.data.Entity;
 import dk.sdu.cbse.common.data.GameData;
 import dk.sdu.cbse.common.data.World;
 import dk.sdu.cbse.common.services.IPostEntityProcessingService;
+import dk.sdu.cbse.enemy.Enemy;
 import dk.sdu.cbse.player.Player;
+
 
 import java.util.*;
 
 public class CollisionDetectionSystem implements IPostEntityProcessingService {
-    private final IAsteroidSplitter splitter = ServiceLoader.load(IAsteroidSplitter.class)
-            .findFirst()
-            .orElseThrow(() -> new RuntimeException("No AsteroidSplitter implementation found"));
+
+
+
+    public CollisionDetectionSystem() {
+    }
+
     @Override
     public void process(GameData gameData, World world) {
-        Set<Entity> entitiesToRemove = new HashSet<>();
-        List<Entity> entities = new ArrayList<>(world.getEntities());
 
-        for (int i = 0; i < entities.size(); i++) {
-            Entity e1 = entities.get(i);
-            for (int j = i + 1; j < entities.size(); j++) {
-                Entity e2 = entities.get(j);
+        // two for loops for all entities in the world
+        for (Entity entity1 : world.getEntities()) {
+            for (Entity entity2 : world.getEntities()) {
 
-                if (e1 == null || e2 == null || e1.getID().equals(e2.getID())) continue;
-
-                String t1 = e1.getType();
-                String t2 = e2.getType();
-
-                if (t1 == null || t2 == null) continue;
-
-                // 🎯 PLAYER bullet hits ENEMY
-                if (collides(e1, e2) && (
-                        (t1.equals("PLAYER_BULLET") && t2.equals("Enemy")) ||
-                                (t2.equals("PLAYER_BULLET") && t1.equals("Enemy"))
-                )) {
-                    entitiesToRemove.add(e1);
-                    entitiesToRemove.add(e2);
+                // if the two entities are identical, skip the iteration
+                if (entity1.getID().equals(entity2.getID())) {
+                    continue;
                 }
 
-                // 💥 PLAYER bullet hits ASTEROID
-                else if (collides(e1, e2) && (
-                        (t1.equals("PLAYER_BULLET") && t2.equals("Asteroid")) ||
-                                (t2.equals("PLAYER_BULLET") && t1.equals("Asteroid"))
-                )) {
-                    Entity asteroid = t1.equals("Asteroid") ? e1 : e2;
-                    splitter.createSplitAsteroid(asteroid, world);
-                    entitiesToRemove.add(e1);
-                    entitiesToRemove.add(e2);
-                }
+                // CollisionDetection
+                if (collides(entity1, entity2)) {
 
-                // 💣 ENEMY bullet hits PLAYER
-                else if (collides(e1, e2) && (
-                        (t1.equals("ENEMY_BULLET") && t2.equals("Player")) ||
-                                (t2.equals("ENEMY_BULLET") && t1.equals("Player"))
-                )) {
-                    handlePlayerHit(e1, e2, entitiesToRemove);
-                }
+                    // As per Lab requirement, remove player if asteroid collides with player.
+                    // Asteroid collisions.
+                    if (entity1 instanceof Asteroids) {
+                        if (entity2 instanceof Player) {
+                            entity2.setHealth(0); // Player removed in PlayerControlSystem.
+                            return; // Exit loop, player is dead and game should end.
+                        }
+                    }
 
-                // 🔻 ENEMY bullet hits ASTEROID (optional)
+                    // Enemy collisions.
+                    if (entity1 instanceof Enemy) {
+                        if (entity2 instanceof Player) {
+                            entity2.setHealth(0); // Player removed in PlayerControlSystem.
+                            return; // Exit loop, player is dead and game should end.
+                        }
+                    }
 
+                    // Bullet collisions.
+                    if (entity1 instanceof Bullet) {
+                        if (((Bullet) entity1).getShooter() instanceof Player) {
+                            if (entity2 instanceof Asteroids) {
+                                entity2.setHealth(entity2.getHealth() - 1); // Asteroid handled in AsteroidControlSystem.
+                                ((Asteroids) entity2).setHit(true);
+                            }
 
-                // 💥 PLAYER touches ENEMY
-                else if (collides(e1, e2) && (
-                        (t1.equals("Player") && t2.equals("Enemy")) ||
-                                (t1.equals("Enemy") && t2.equals("Player"))
-                )) {
-                    handlePlayerHit(e1, e2, entitiesToRemove);
-                    if (t1.equals("Enemy")) entitiesToRemove.add(e1);
-                    if (t2.equals("Enemy")) entitiesToRemove.add(e2);
-                }
+                            if (entity2 instanceof Enemy) {
+                                entity2.setHealth(entity2.getHealth() - 1); // Enemy handled in EnemyControlSystem.
+                            }
+                        }
 
-                // 🪨 PLAYER touches ASTEROID
-                else if (collides(e1, e2) && (
-                        (t1.equals("Player") && t2.equals("Asteroid")) ||
-                                (t1.equals("Asteroid") && t2.equals("Player"))
-                )) {
-                    handlePlayerHit(e1, e2, entitiesToRemove);
-                    if (t1.equals("Asteroid")) entitiesToRemove.add(e1);
-                    if (t2.equals("Asteroid")) entitiesToRemove.add(e2);
+                        if (((Bullet) entity1).getShooter() instanceof Enemy) {
+                            if (entity2 instanceof Player) {
+                                entity2.setHealth(entity2.getHealth() -1); // Player handled in PlayerControlSystem.
+                            }
+                        }
+
+                        world.removeEntity(entity1);
+                    }
                 }
             }
-
-            keepEntityWithinBounds(e1, gameData);
         }
 
-        for (Entity e : entitiesToRemove) {
-            world.removeEntity(e);
-        }
     }
 
-    private void handlePlayerHit(Entity e1, Entity e2, Set<Entity> entitiesToRemove) {
-        if (e1.getType().equals("Player") && e1 instanceof Player) {
-            Player player = (Player) e1;
-            player.loseLife();
-            System.out.println("⚠️ Player hit! Lives left: " + player.getLives());
-            if (player.getLives() <= 0) entitiesToRemove.add(e1);
-        }
-        if (e2.getType().equals("Player") && e2 instanceof Player) {
-            Player player = (Player) e2;
-            player.loseLife();
-            System.out.println("⚠️ Player hit! Lives left: " + player.getLives());
-            if (player.getLives() <= 0) entitiesToRemove.add(e2);
-        }
-    }
-
-    private boolean collides(Entity e1, Entity e2) {
-        float dx = (float) (e1.getX() - e2.getX());
-        float dy = (float) (e1.getY() - e2.getY());
+    public Boolean collides(Entity entity1, Entity entity2) {
+        float dx = (float) entity1.getX() - (float) entity2.getX();
+        float dy = (float) entity1.getY() - (float) entity2.getY();
         float distance = (float) Math.sqrt(dx * dx + dy * dy);
-        return distance < (e1.getRadius() + e2.getRadius());
+        return distance < (entity1.getRadius() + entity2.getRadius());
     }
-
-    private void keepEntityWithinBounds(Entity entity, GameData gameData) {
-        String type = entity.getType();
-
-        // ❌ Skip bullets — de skal IKKE wrappe
-        if ("PLAYER_BULLET".equals(type) || "ENEMY_BULLET".equals(type)) {
-            return;
-        }
-
-        double x = entity.getX();
-        double y = entity.getY();
-        float maxX = gameData.getDisplayWidth();
-        float maxY = gameData.getDisplayHeight();
-
-        if (x < 0) {
-            entity.setX(maxX);
-        } else if (x > maxX) {
-            entity.setX(0);
-        }
-
-        if (y < 0) {
-            entity.setY(maxY);
-        } else if (y > maxY) {
-            entity.setY(0);
-        }
-    }
-
 
 }

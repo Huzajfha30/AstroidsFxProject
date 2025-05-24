@@ -6,6 +6,8 @@ import dk.sdu.cbse.common.data.GameData;
 import dk.sdu.cbse.common.data.GameKeys;
 import dk.sdu.cbse.common.data.World;
 import dk.sdu.cbse.common.services.IEntityProcessingService;
+import dk.sdu.cbse.common.weapon.Weapon;
+import dk.sdu.cbse.common.weapon.WeaponSPI;
 
 import java.util.Collection;
 import java.util.ServiceLoader;
@@ -16,7 +18,17 @@ public class PlayerControlSystem implements IEntityProcessingService {
 
     @Override
     public void process(GameData gameData, World world) {
-        for (Entity player : world.getEntities(Player.class)) {
+
+        for (Entity entity : world.getEntities(Player.class)) {
+            Player player = (Player) entity;
+
+
+            if (player.getHealth() <= 0) {
+                world.removeEntity(player);
+                continue;
+            }
+
+
             if (gameData.getKeys().isDown(GameKeys.LEFT)) {
                 player.setRotation(player.getRotation() - 5);
             }
@@ -24,28 +36,50 @@ public class PlayerControlSystem implements IEntityProcessingService {
                 player.setRotation(player.getRotation() + 5);
             }
             if (gameData.getKeys().isDown(GameKeys.UP)) {
-                double dx = Math.cos(Math.toRadians(player.getRotation()));
-                double dy = Math.sin(Math.toRadians(player.getRotation()));
-                player.setX(player.getX() + dx);
-                player.setY(player.getY() + dy);
+                double changeX = Math.cos(Math.toRadians(player.getRotation()));
+                double changeY = Math.sin(Math.toRadians(player.getRotation()));
+                player.setX(player.getX() + changeX * gameData.getDeltaTime() * player.getMoveSpeed());
+                player.setY(player.getY() + changeY * gameData.getDeltaTime() * player.getMoveSpeed());
             }
-            if (gameData.getKeys().isDown(GameKeys.SPACE)) {
-                getBulletSPIs().stream().findFirst().ifPresent(spi -> {
-                    Entity bullet = spi.createBullet(player, gameData);
-                    bullet.setType("PLAYER_BULLET");
-                    world.addEntity(bullet);
-                });
+            if(gameData.getKeys().isDown(GameKeys.SPACE)) {
+                if (player.getWeapon() != null) {
+                    player.getWeapon().setIsShooting(true);
+                } else {
+                    getWeaponSPIs().stream().findFirst().ifPresent(
+                            spi -> {
+                                System.out.println("Creating weapon.");
+                                Weapon weapon = spi.createWeapon(player);
+                                weapon.setFireRate(0.25);
+                                world.addEntity(weapon);
+                                player.setWeapon(weapon);
+                                player.getWeapon().setFireCooldown(1);
+                                player.getWeapon().setIsShooting(true);
+                            }
+                    );
+                }
             }
 
-            // Begræns bevægelse til skærmen
-            if (player.getX() < 0) player.setX(0);
-            if (player.getX() > gameData.getDisplayWidth()) player.setX(gameData.getDisplayWidth());
-            if (player.getY() < 0) player.setY(0);
-            if (player.getY() > gameData.getDisplayHeight()) player.setY(gameData.getDisplayHeight());
+            if (player.getX() < 0) {
+                player.setX(1);
+            }
+
+            if (player.getX() > gameData.getDisplayWidth()) {
+                player.setX(gameData.getDisplayWidth()-1);
+            }
+
+            if (player.getY() < 0) {
+                player.setY(1);
+            }
+
+            if (player.getY() > gameData.getDisplayHeight()) {
+                player.setY(gameData.getDisplayHeight()-1);
+            }
+
+
         }
     }
 
-    private Collection<? extends BulletSPI> getBulletSPIs() {
-        return ServiceLoader.load(BulletSPI.class).stream().map(ServiceLoader.Provider::get).collect(toList());
+    private Collection<? extends WeaponSPI> getWeaponSPIs() {
+        return ServiceLoader.load(WeaponSPI.class).stream().map(ServiceLoader.Provider::get).collect(toList());
     }
 }

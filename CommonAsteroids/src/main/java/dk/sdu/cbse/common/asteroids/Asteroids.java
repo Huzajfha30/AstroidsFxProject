@@ -3,7 +3,13 @@ package dk.sdu.cbse.common.asteroids;
 import dk.sdu.cbse.common.data.Entity;
 
 public class Asteroids extends Entity {
-    public Asteroids() {
-        this.setType("Asteroid");
+    private boolean isHit;
+    public boolean isHit() {
+        return isHit;
     }
+
+    public void setHit(boolean isHit) {
+        this.isHit = isHit;
+    }
+
 }

@@ -26,6 +26,7 @@ public class Main extends Application {
         game.start(window);
         game.render();
 
+
     }
 
 }

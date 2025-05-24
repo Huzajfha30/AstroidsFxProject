@@ -5,9 +5,13 @@ import dk.sdu.cbse.player.PlayerPlugin;
 
 module Player {
     exports dk.sdu.cbse.player;
+
+    requires java.desktop;
+    requires javafx.graphics;
     requires Common;
     requires CommonBullet;
-    uses dk.sdu.cbse.common.bullet.BulletSPI;
+    requires CommonWeapon;
+    uses dk.sdu.cbse.common.weapon.WeaponSPI;
     provides IEntityProcessingService with PlayerControlSystem;
     provides IGamePluginService with PlayerPlugin;
 }

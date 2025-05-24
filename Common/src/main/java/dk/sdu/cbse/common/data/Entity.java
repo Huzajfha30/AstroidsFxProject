@@ -4,6 +4,7 @@ package dk.sdu.cbse.common.data;
 import java.io.Serializable;
 import java.util.UUID;
 
+import javafx.scene.paint.Color;
 public class Entity implements Serializable {
 
     private final UUID ID = UUID.randomUUID();
@@ -13,9 +14,10 @@ public class Entity implements Serializable {
     private double y;
     private double rotation;
     private float radius;
-    private String type;
-
-
+    private Color color;
+    private int health;
+    private int moveSpeed;
+    private int turnSpeed;
     public String getID() {
         return ID.toString();
     }
@@ -62,14 +64,34 @@ public class Entity implements Serializable {
     public float getRadius() {
         return this.radius;
     }
-
-    public String getType() {
-        return type;
+    public Color getColor() {
+        return color == null ? color = Color.BLACK : color;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setColor(Color color) {
+        this.color = color;
+    }
+    public int getHealth() {
+        return health;
     }
 
+    public void setHealth(int health) {
+        this.health = health;
+    }
 
+    public int getMoveSpeed() {
+        return moveSpeed;
+    }
+
+    public void setMoveSpeed(int moveSpeed) {
+        this.moveSpeed = moveSpeed;
+    }
+
+    public int getTurnSpeed() {
+        return turnSpeed;
+    }
+
+    public void setTurnSpeed(int turnSpeed) {
+        this.turnSpeed = turnSpeed;
+    }
 }
