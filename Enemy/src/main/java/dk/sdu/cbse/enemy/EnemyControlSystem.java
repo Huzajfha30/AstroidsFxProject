@@ -57,8 +57,8 @@ public class EnemyControlSystem implements IEntityProcessingService {
 
             double changeX = Math.cos(Math.toRadians(enemy.getRotation()));
             double changeY = Math.sin(Math.toRadians(enemy.getRotation()));
-
-            enemy.setRotation(enemy.getRotation() + rand.nextInt(-2, 3) * enemy.getRotation() * gameData.getDeltaTime());
+            int randomRotationChange = rand.nextInt(5) - 2; // -2 to 2
+            enemy.setRotation(enemy.getRotation() + randomRotationChange * enemy.getRotation() * gameData.getDeltaTime());
             rand.setSeed(System.currentTimeMillis());
 
             enemy.setX(enemy.getX() + changeX * enemy.getMoveSpeed() * gameData.getDeltaTime());

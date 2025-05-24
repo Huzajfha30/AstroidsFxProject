@@ -30,7 +30,7 @@ public class GameData {
     public int getDisplayHeight() {
         return displayHeight;
     }
-    public void setDeltaTime() {
+    public void setDeltaTime(float v) {
         long currentTime = System.nanoTime();
         if (lastFrameTime > 0) {
             long deltaTime = currentTime - lastFrameTime;

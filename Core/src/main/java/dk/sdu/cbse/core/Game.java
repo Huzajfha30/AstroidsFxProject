@@ -22,7 +22,6 @@ import javafx.stage.Stage;
 import javafx.scene.shape.Polygon;
 
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -117,7 +116,7 @@ class Game {
     }
 
     private void update() {
-        gameData.setDeltaTime();
+        gameData.setDeltaTime(0.1f);
         for (IEntityProcessingService entityProcessorService : getEntityProcessingServices()) {
             entityProcessorService.process(gameData, world);
         }
